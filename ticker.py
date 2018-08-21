@@ -31,6 +31,8 @@ parser.add_argument('--apiKey', dest='apiKey',
 
 args = parser.parse_args()
 
+busList = []
+
 def getBuses(b, ak):
         """
         Fetches crypto currency prices. 
@@ -74,11 +76,20 @@ def updateCounter(job_func, *args, **kwargs):
 	ret = functools.partial(job_func, *args, **kwargs)()
 	device.show_message(ret, font=proportional(TINY_FONT))
 
+def updateBusList():
+	if (len(busList) == 0):
+		print "hi"
+	else:
+		displayBus()
 
+def displayBus():
+	print "bus"
 
 if __name__ == '__main__':
 	device = led.matrix(cascaded = 8)
 	device.orientation(90)
+
+	updateBusList()
 
 	if (args.busStop is not None):
 		#time.sleep(2)
