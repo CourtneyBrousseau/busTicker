@@ -86,10 +86,6 @@ def updateBusList():
 		speech_output = "hi"
 		route = "51B"
 		for route in bus_departures.findall('predictions'):
-		        if route == bus_departures.findall('predictions')[0]:
-           			stopName = route.get("stopTitle")
-            			stopName = stopName.replace("&", "and")
-            			speech_output += stopName + ": "
         		routeName = route.get("routeTag")
         		if not route.get("dirTitleBecauseNoPredictions"):
             			for direction in route.findall("direction"):
