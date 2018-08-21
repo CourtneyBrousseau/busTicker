@@ -81,12 +81,14 @@ def updateCounter(job_func, *args, **kwargs):
 	ret = functools.partial(job_func, *args, **kwargs)()
 	device.show_message(ret, font=proportional(TINY_FONT))
 
-def updateBusList():
+def showBuses():
 	if (len(busList) == 0):
-		for stop in busStops:
-			getUpcomingDeparturesFromStop(stop)
-	else:
-		displayBus()
+		updateBusList()
+	displayBus()
+
+def updateBusList():
+        for stop in busStops:
+		getUpcomingDeparturesFromStop(stop)
 
 def getUpcomingDeparturesFromStop(stop):
 	response = urllib2.urlopen(NEXT_BUS_API_BASE + "command=predictions&a=actransit&stopId=" + stop)
@@ -97,17 +99,22 @@ def getUpcomingDeparturesFromStop(stop):
                 	for direction in route.findall("direction"):
                         	toward = direction.get("title")
                                 minutes = direction[0].get("minutes")
-                                speech_output = routeName + " bus toward " + toward + " in " + minutes + " minutes. "
+                                busList.append(routeName + " -> " + toward + " : " + minutes + " min.")
+				speech_output = routeName + " bus toward " + toward + " in " + minutes + " minutes. "
 				print(speech_output)
 
 def displayBus():
-	print "bus"
+	if (len(busList) == 0):
+		device.show_message("No buses :(", font=proportional(TINY_FONT))
+	else:
+		bus = busList.pop(0)
+		device.show_message(bus, font=proportional(TINY_FONT))
 
 if __name__ == '__main__':
 	device = led.matrix(cascaded = 8)
 	device.orientation(90)
 
-	schedule.every(1).seconds.do(updateBusList)
+	schedule.every(1).seconds.do(showBuses)
 
 	# Run the scheduler
        	while True:
