@@ -34,6 +34,7 @@ parser.add_argument('--apiKey', dest='apiKey',
 args = parser.parse_args()
 
 busStops = ["52223", "52244", "53677", "50144"]
+busRoutes = ["51B", "79"]
 busList = []
 NEXT_BUS_API_BASE = "http://webservices.nextbus.com/service/publicXMLFeed?"
 
@@ -82,21 +83,22 @@ def updateCounter(job_func, *args, **kwargs):
 
 def updateBusList():
 	if (len(busList) == 0):
-		for (stop in busStops):
-			response = urllib2.urlopen(NEXT_BUS_API_BASE + "command=predictions&a=actransit&stopId=" + "52223")
-    			bus_departures = xml.etree.ElementTree.parse(response).getroot()
-			speech_output = "hi"
-			route = "51B"
-			for route in bus_departures.findall('predictions'):
-        			routeName = route.get("routeTag")
-        			if not route.get("dirTitleBecauseNoPredictions"):
-            				for direction in route.findall("direction"):
-               	 				toward = direction.get("title")
-               		 			minutes = direction[0].get("minutes")
-                				speech_output += routeName + " bus toward " + toward + " in " + minutes + " minutes. "
-		print(speech_output)
+		for stop in busStops:
+			getUpcomingDeparturesFromStop(stop)
 	else:
 		displayBus()
+
+def getUpcomingDeparturesFromStop(stop):
+	response = urllib2.urlopen(NEXT_BUS_API_BASE + "command=predictions&a=actransit&stopId=" + stop)
+        bus_departures = xml.etree.ElementTree.parse(response).getroot()
+        for route in bus_departures.findall('predictions'):
+        	routeName = route.get("routeTag")
+		if routeName in busRoutes and not route.get("dirTitleBecauseNoPredictions"):
+                	for direction in route.findall("direction"):
+                        	toward = direction.get("title")
+                                minutes = direction[0].get("minutes")
+                                speech_output = routeName + " bus toward " + toward + " in " + minutes + " minutes. "
+				print(speech_output)
 
 def displayBus():
 	print "bus"
