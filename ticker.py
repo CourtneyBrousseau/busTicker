@@ -103,8 +103,12 @@ if __name__ == '__main__':
 	device = led.matrix(cascaded = 8)
 	device.orientation(90)
 
-	updateBusList()
+	schedule.every(1).seconds.do(updateBusList)
 
+	# Run the scheduler
+       	while True:
+                schedule.run_pending()
+                time.sleep(1)
 	if (args.busStop is not None):
 		#time.sleep(2)
 
