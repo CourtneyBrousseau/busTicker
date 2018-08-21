@@ -11,6 +11,8 @@ import max7219.led as led
 from max7219.font import proportional, TINY_FONT
 from custom_font import CUSTOM_FONT
 from datetime import datetime
+import urllib2
+import xml.etree.ElementTree
 
 #this makes it work
 import spidev
@@ -32,6 +34,7 @@ parser.add_argument('--apiKey', dest='apiKey',
 args = parser.parse_args()
 
 busList = []
+NEXT_BUS_API_BASE = "http://webservices.nextbus.com/service/publicXMLFeed?"
 
 def getBuses(b, ak):
         """
@@ -78,7 +81,22 @@ def updateCounter(job_func, *args, **kwargs):
 
 def updateBusList():
 	if (len(busList) == 0):
-		print "hi"
+		response = urllib2.urlopen(NEXT_BUS_API_BASE + "command=predictions&a=actransit&stopId=" + "52223")
+    		bus_departures = xml.etree.ElementTree.parse(response).getroot()
+		speech_output = "hi"
+		route = "51B"
+		for route in bus_departures.findall('predictions'):
+		        if route == bus_departures.findall('predictions')[0]:
+           			stopName = route.get("stopTitle")
+            			stopName = stopName.replace("&", "and")
+            			speech_output += stopName + ": "
+        		routeName = route.get("routeTag")
+        		if not route.get("dirTitleBecauseNoPredictions"):
+            			for direction in route.findall("direction"):
+                			toward = direction.get("title")
+                			minutes = direction[0].get("minutes")
+                			speech_output += routeName + " bus toward " + toward + " in " + minutes + " minutes. "
+		print(speech_output)
 	else:
 		displayBus()
 
