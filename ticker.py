@@ -99,9 +99,9 @@ def getUpcomingDeparturesFromStop(stop):
                 	for direction in route.findall("direction"):
                         	toward = direction.get("title")
                                 minutes = direction[0].get("minutes")
-                                busList.append(routeName + " -> " + toward + " : " + minutes + " min.")
-				speech_output = routeName + " bus toward " + toward + " in " + minutes + " minutes. "
-				print(speech_output)
+                                bus = routeName + " " + toward + " in " + minutes + " min"
+				busList.append(bus)
+				print(bus)
 
 def displayBus():
 	if (len(busList) == 0):
@@ -120,17 +120,3 @@ if __name__ == '__main__':
        	while True:
                 schedule.run_pending()
                 time.sleep(1)
-	if (args.busStop is not None):
-		#time.sleep(2)
-
-                schedule.every(5).seconds.do(updateCounter, getBuses, args.busStop, args.apiKey)
-
-                # Run the scheduler
-                while True:
-                        schedule.run_pending()
-                        time.sleep(1)
-
-
-
-
-
