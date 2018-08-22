@@ -58,9 +58,9 @@ if __name__ == '__main__':
 	device = led.matrix(cascaded = 8)
 	device.orientation(90)
 
-	schedule.every(1).seconds.do(showBuses)
+	#schedule.every(1).seconds.do(showBuses)
 
 	# Run the scheduler
        	while True:
-                schedule.run_pending()
+                showBuses()
                 time.sleep(1)
