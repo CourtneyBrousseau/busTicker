@@ -4,6 +4,5 @@
 
 cd /
 cd home/pi/bus-tracker
-sudo python loading.py
 sudo python ticker.py
 cd /

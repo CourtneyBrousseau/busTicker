@@ -59,9 +59,11 @@ if __name__ == '__main__':
 	device = led.matrix(cascaded = 8)
 	device.orientation(90)
 
-	#schedule.every(1).seconds.do(showBuses)
+	# give pi time to connect to the internet
+	for x in range(0, 1000):
+		device.show_message("Loading ...", font=proportional(TINY_FONT))
+        	time.sleep(.01)
 
-	# Run the scheduler
        	while True:
                 showBuses()
                 time.sleep(1)
