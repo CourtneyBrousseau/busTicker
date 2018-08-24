@@ -41,12 +41,20 @@ def getUpcomingDeparturesFromStop(stop):
 			if routeName in busRoutes and not route.get("dirTitleBecauseNoPredictions"):
                 		for direction in route.findall("direction"):
                         		toward = direction.get("title")
-                                	minutes = direction[0].get("minutes")
-                                	bus = routeName + " " + toward + " in " + minutes + " min"
+                      			towardAcronym = changeTowardToAcronym(toward)
+			          	minutes = direction[0].get("minutes")
+                                	bus = routeName + " -> " + towardAcronym + " : " + minutes + "m"
 					busList.append(bus)
 					print(bus)
 	except:
 		device.show_message("Error", font=proportional(TINY_FONT))
+
+def changeTowardToAcronym(toward):
+	towardSplit = toward.split()
+	acronym = ""
+	for i in range(1, len(towardSplit)):
+		acronym += towardSplit[i][0]
+	return acronym
 
 def displayBus():
 	if (len(busList) == 0):
