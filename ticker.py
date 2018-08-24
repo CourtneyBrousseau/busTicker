@@ -1,10 +1,8 @@
 
 # ticker.py
-import requests
 import json
 import sys
 import argparse
-import schedule
 import time
 import functools
 import max7219.led as led
