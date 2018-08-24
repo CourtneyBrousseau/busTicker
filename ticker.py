@@ -33,17 +33,20 @@ def updateBusList():
 		getUpcomingDeparturesFromStop(stop)
 
 def getUpcomingDeparturesFromStop(stop):
-	response = urllib2.urlopen(NEXT_BUS_API_BASE + "command=predictions&a=actransit&stopId=" + stop)
-        bus_departures = xml.etree.ElementTree.parse(response).getroot()
-        for route in bus_departures.findall('predictions'):
-        	routeName = route.get("routeTag")
-		if routeName in busRoutes and not route.get("dirTitleBecauseNoPredictions"):
-                	for direction in route.findall("direction"):
-                        	toward = direction.get("title")
-                                minutes = direction[0].get("minutes")
-                                bus = routeName + " " + toward + " in " + minutes + " min"
-				busList.append(bus)
-				print(bus)
+	try:
+		response = urllib2.urlopen(NEXT_BUS_API_BASE + "command=predictions&a=actransit&stopId=" + stop)
+       		bus_departures = xml.etree.ElementTree.parse(response).getroot()
+        	for route in bus_departures.findall('predictions'):
+        		routeName = route.get("routeTag")
+			if routeName in busRoutes and not route.get("dirTitleBecauseNoPredictions"):
+                		for direction in route.findall("direction"):
+                        		toward = direction.get("title")
+                                	minutes = direction[0].get("minutes")
+                                	bus = routeName + " " + toward + " in " + minutes + " min"
+					busList.append(bus)
+					print(bus)
+	except:
+		device.show_message("Error", font=proportional(TINY_FONT))
 
 def displayBus():
 	if (len(busList) == 0):
